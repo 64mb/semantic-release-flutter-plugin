@@ -1,14 +1,13 @@
-import { test } from 'uvu';
-import { expect } from 'expect';
-import lifecycles from '../';
-import type { Config, Context } from 'semantic-release';
+const { test } = require('uvu');
+const { expect } = require('expect');
+const lifecycles = require('../');
 
 const context = {
     logger: {
         log: () => {},
         debug: () => {},
     },
-} as unknown as Config & Context;
+};
 const contextWithCwd = { ...context, cwd: 'src/__tests__' };
 
 test("should throw error when manifest doesn't exist", () => {

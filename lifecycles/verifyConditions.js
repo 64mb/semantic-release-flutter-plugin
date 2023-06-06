@@ -1,20 +1,18 @@
-import fs from 'fs';
-import path from 'path';
-import type { Config, Context } from 'semantic-release';
-import type PluginConfig from '../types/PluginConfig.js';
+const fs = require('fs');
+const path = require('path');
 
-export default function verifyConditions(
-    pluginConfig: PluginConfig | null | undefined,
-    context: Config & Context
+function verifyConditions(
+    pluginConfig,
+    context
 ) {
     const { logger } = context;
     if (!pluginConfig) throw new AggregateError(['No options passed']);
 
     logger.log('Verifying options: %s', pluginConfig);
 
-    const weightErrors: Error[] = [];
+    const weightErrors = [];
 
-    (Object.keys(pluginConfig) as (keyof typeof pluginConfig)[]).forEach(
+    (Object.keys(pluginConfig)).forEach(
         key => {
             if (
                 key.endsWith('Weight') &&
@@ -23,8 +21,8 @@ export default function verifyConditions(
                     (typeof pluginConfig[key] === 'number' &&
                         key !== 'channelWeight' &&
                         // @ts-expect-error Shut up
-                        pluginConfig[key]! > 0) ||
-                    (key === 'channelWeight' && pluginConfig[key]! > -1)
+                        pluginConfig[key] > 0) ||
+                    (key === 'channelWeight' && pluginConfig[key] > -1)
                 )
             )
                 weightErrors.push(
@@ -35,27 +33,27 @@ export default function verifyConditions(
         }
     );
 
-    if (pluginConfig.minorWeight! >= pluginConfig.majorWeight!)
+    if (pluginConfig.minorWeight >= pluginConfig.majorWeight)
         weightErrors.push(
             new Error(
                 `Option minorWeight (${pluginConfig.minorWeight}) must be lower than majorWeight (${pluginConfig.majorWeight})`
             )
         );
-    if (pluginConfig.patchWeight! >= pluginConfig.minorWeight!)
+    if (pluginConfig.patchWeight >= pluginConfig.minorWeight)
         weightErrors.push(
             new Error(
                 `Option patchWeight (${pluginConfig.patchWeight}) must be lower than minorWeight (${pluginConfig.minorWeight})`
             )
         );
-    if (pluginConfig.channelWeight! >= pluginConfig.patchWeight!)
+    if (pluginConfig.channelWeight >= pluginConfig.patchWeight)
         weightErrors.push(
             new Error(
                 `Option channelWeight (${pluginConfig.channelWeight}) must be lower than patchWeight (${pluginConfig.patchWeight})`
             )
         );
     if (
-        pluginConfig.preReleaseWeight! >=
-        (pluginConfig.channelWeight || pluginConfig.patchWeight)!
+        pluginConfig.preReleaseWeight >=
+        (pluginConfig.channelWeight || pluginConfig.patchWeight)
     )
         weightErrors.push(
             new Error(
@@ -83,3 +81,5 @@ export default function verifyConditions(
             `Cannot find pubspec file: ${pluginConfig.pubspecPath}`,
         ]);
 }
+
+module.exports = verifyConditions

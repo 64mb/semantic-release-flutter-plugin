@@ -1,15 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
-import type { Config, Context } from 'semantic-release';
-import type PluginConfig from '../types/PluginConfig.js';
-import calculateVersionCode, {
-    CalculateVersionCodeOptions,
-} from '../util/calculateVersionCode.js';
+const fs = require('fs');
+const path = require('path');
+const { parse: parseYaml, stringify: stringifyYaml } = require('yaml');
+const calculateVersionCode = require('../util/calculateVersionCode.js');
 
 const prepare = function prepare(
-    pluginConfig: PluginConfig | null | undefined,
-    context: Config & Context
+    pluginConfig,
+    context
 ) {
     const { logger, options } = context;
     const resolvedFile = path.join(
@@ -30,19 +26,19 @@ const prepare = function prepare(
     const versionCode = calculateVersionCode(
         Object.assign(
             {
-                versionString: context.nextRelease!.version,
+                versionString: context.nextRelease.version,
                 majorWeight: 100_000_000,
                 minorWeight: 100_000,
                 patchWeight: 1_000,
                 channelWeight: 100,
                 preReleaseWeight: 1,
-            } as CalculateVersionCodeOptions,
+            },
             pluginConfig
         ),
         options?.branches ?? []
     );
 
-    const versionString = `${context.nextRelease!.version}+${versionCode}`;
+    const versionString = `${context.nextRelease.version}+${versionCode}`;
 
     logger.log('Calculated version code: %s', versionCode);
     logger.log('Version is: %s', versionString);
@@ -58,4 +54,4 @@ const prepare = function prepare(
     fs.writeFileSync(resolvedFile, newFileContents, 'utf8');
 };
 
-export default prepare;
+module.exports = prepare;

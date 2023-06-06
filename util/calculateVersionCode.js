@@ -1,10 +1,8 @@
-import { parse as parseVersion } from 'semver';
-import PluginConfig from '../types/PluginConfig';
-import { BranchSpec } from 'semantic-release';
+const { parse: parseVersion } = require('semver');
 
 function calculateVersionCode(
-    options: CalculateVersionCodeOptions,
-    branches: BranchSpec | readonly BranchSpec[]
+    options,
+    branches
 ) {
     const {
         versionString,
@@ -83,8 +81,4 @@ function calculateVersionCode(
     return versionCode;
 }
 
-export type CalculateVersionCodeOptions = Required<
-    Omit<PluginConfig & { versionString: string }, 'pubspecPath'>
->;
-
-export default calculateVersionCode;
+module.exports = calculateVersionCode

@@ -1,5 +1,7 @@
 # semantic-release-flutter-plugin
 
+### fork from [PalmDevs/semantic-release-flutter-plugin](https://github.com/PalmDevs/semantic-release-flutter-plugin) with old semantic-release version support without ESM import
+
 [**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to bump pubspec.yaml version with version code support.
 > **Warning**: Your `branches` array configuration order for **semantic-release** actually matters. More explanation [here](#examples).
 

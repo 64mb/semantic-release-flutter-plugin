@@ -1,10 +1,7 @@
-import { copyFileSync, readFileSync, rmSync } from 'fs';
-import { test } from 'uvu';
-import { expect } from 'expect';
-import lifecycles from '../';
-import type { Context } from 'semantic-release';
-
-// TODO: test with limits
+const { copyFileSync, readFileSync, rmSync } = require( 'fs');
+const { test } = require( 'uvu');
+const { expect } = require( 'expect');
+const lifecycles = require('../')
 
 const context = {
     options: {
@@ -21,23 +18,23 @@ const context = {
         log: () => {},
         debug: () => {},
     },
-} as unknown as Context;
+};
 
 const contextWithDevPreRelease = {
     ...context,
     nextRelease: {
         version: '2.1.3-dev.1',
     },
-} as unknown as Context;
+};
 
 const contextWithStagingPreRelease = {
     ...context,
     nextRelease: {
         version: '2.1.3-beta.2',
     },
-} as unknown as Context;
+};
 
-function runPrepareWithContext(context: Context) {
+function runPrepareWithContext(context) {
     copyFileSync(
         'src/__tests__/pubspec.yaml',
         'src/__tests__/pubspec-testing.yaml'
